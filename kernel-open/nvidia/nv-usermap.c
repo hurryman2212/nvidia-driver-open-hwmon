@@ -50,7 +50,7 @@ NV_STATUS NV_API_CALL nv_add_mapping_context_to_file(
 
     nvamc = &nvlfp->mmap_context;
 
-    if (nvamc->valid)
+    if (smp_load_acquire(&nvamc->valid))
     {
         status = NV_ERR_STATE_IN_USE;
         goto done;
@@ -62,6 +62,10 @@ NV_STATUS NV_API_CALL nv_add_mapping_context_to_file(
     {
         nvamc->alloc = pAllocPriv;
         nvamc->page_index = pageIndex;
+        {
+            nv_alloc_t *at = (nv_alloc_t *) nvamc->alloc;
+            atomic64_inc(&at->usage_count);
+        }
     }
     else
     {
@@ -94,7 +98,7 @@ NV_STATUS NV_API_CALL nv_add_mapping_context_to_file(
 
     nvamc->prot = prot;
     nvamc->caching = nvuap->caching;
-    nvamc->valid = NV_TRUE;
+    smp_store_release(&nvamc->valid, NV_TRUE);
 
 done:
     nv_put_file_private(priv);

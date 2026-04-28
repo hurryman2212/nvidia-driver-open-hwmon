@@ -788,13 +788,8 @@ cleanup:
         // to be allocated. We delay them until now to save memory when runs
         // are done without using graphics contexts!
         //
-        // For MIG ESX hypervisor, vGPU stack do not need any GR channel on host so
-        // skip global ctx buffer alloc to save FB memory
-        //
         if (!pKernelGraphics->globalCtxBuffersInfo.pGlobalCtxBuffers[gfid].bAllocated &&
-            (!gpuIsClientRmAllocatedCtxBufferEnabled(pGpu) ||
-             (gpuIsSriovEnabled(pGpu) && IS_GFID_PF(gfid) && 
-              !(IS_MIG_IN_USE(pGpu) && hypervisorIsType(OS_HYPERVISOR_VMWARE)))))
+            (!gpuIsClientRmAllocatedCtxBufferEnabled(pGpu)))
         {
             NV_CHECK_OK_OR_RETURN(LEVEL_ERROR,
                 kgraphicsAllocGrGlobalCtxBuffers_HAL(pGpu, pKernelGraphics, gfid, NULL));

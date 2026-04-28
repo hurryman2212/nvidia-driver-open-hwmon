@@ -577,6 +577,19 @@ RmInitGpuInfoWithRmApi
         nv->dma_buf_supported =
             (pGpuInfoParams->gpuInfoList[2].data ==
              NV2080_CTRL_GPU_INFO_INDEX_DMABUF_CAPABILITY_YES);
+
+        switch (pGpuInfoParams->gpuInfoList[3].data)
+        {
+            case NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_NONE:
+                nv->coherent_gpu_mem_mode = NV_COHERENT_GPU_MEM_MODE_NONE;
+                break;
+            case NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_NUMA:
+                nv->coherent_gpu_mem_mode = NV_COHERENT_GPU_MEM_MODE_NUMA;
+                break;
+            case NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_DRIVER:
+                nv->coherent_gpu_mem_mode = NV_COHERENT_GPU_MEM_MODE_DRIVER;
+                break;
+        }
     }
 
     nv->coherent =
@@ -602,19 +615,6 @@ RmInitGpuInfoWithRmApi
         nv->mem_has_struct_page = pGpu->getProperty(pGpu, PDB_PROP_GPU_ZERO_FB) ||
                                   (pGpuInfoParams->gpuInfoList[3].data ==
                                    NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_NUMA);
-    }
-
-    switch (pGpuInfoParams->gpuInfoList[2].data)
-    {
-        case NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_NONE:
-            nv->coherent_gpu_mem_mode = NV_COHERENT_GPU_MEM_MODE_NONE;
-            break;
-        case NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_NUMA:
-            nv->coherent_gpu_mem_mode = NV_COHERENT_GPU_MEM_MODE_NUMA;
-            break;
-        case NV2080_CTRL_GPU_INFO_INDEX_COHERENT_GPU_MEMORY_MODE_DRIVER:
-            nv->coherent_gpu_mem_mode = NV_COHERENT_GPU_MEM_MODE_DRIVER;
-            break;
     }
 
     portMemFree(pGpuInfoParams);

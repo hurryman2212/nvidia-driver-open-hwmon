@@ -4331,6 +4331,16 @@ static inline NV_STATUS subdeviceCtrlCmdEccGetRepairStatus(struct Subdevice *pSu
 #define subdeviceCtrlCmdEccGetRepairStatus(pSubdevice, pParams) subdeviceCtrlCmdEccGetRepairStatus_IMPL(pSubdevice, pParams)
 #endif // __nvoc_subdevice_h_disabled
 
+NV_STATUS subdeviceCtrlCmdEccInjectionSupported_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_INJECTION_SUPPORTED_PARAMS *pParams);
+#ifdef __nvoc_subdevice_h_disabled
+static inline NV_STATUS subdeviceCtrlCmdEccInjectionSupported(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_INJECTION_SUPPORTED_PARAMS *pParams) {
+    NV_ASSERT_FAILED_PRECOMP("Subdevice was disabled!");
+    return NV_ERR_NOT_SUPPORTED;
+}
+#else // __nvoc_subdevice_h_disabled
+#define subdeviceCtrlCmdEccInjectionSupported(pSubdevice, pParams) subdeviceCtrlCmdEccInjectionSupported_IMPL(pSubdevice, pParams)
+#endif // __nvoc_subdevice_h_disabled
+
 NV_STATUS subdeviceCtrlCmdEccGetSramUniqueUncorrCounts_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_SRAM_UNIQUE_UNCORR_COUNTS_PARAMS *pParams);
 #ifdef __nvoc_subdevice_h_disabled
 static inline NV_STATUS subdeviceCtrlCmdEccGetSramUniqueUncorrCounts(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_SRAM_UNIQUE_UNCORR_COUNTS_PARAMS *pParams) {
@@ -4339,6 +4349,16 @@ static inline NV_STATUS subdeviceCtrlCmdEccGetSramUniqueUncorrCounts(struct Subd
 }
 #else // __nvoc_subdevice_h_disabled
 #define subdeviceCtrlCmdEccGetSramUniqueUncorrCounts(pSubdevice, pParams) subdeviceCtrlCmdEccGetSramUniqueUncorrCounts_IMPL(pSubdevice, pParams)
+#endif // __nvoc_subdevice_h_disabled
+
+NV_STATUS subdeviceCtrlCmdEccGetUnrepairableMemoryFlag_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_UNREPAIRABLE_MEMORY_FLAG_PARAMS *pParams);
+#ifdef __nvoc_subdevice_h_disabled
+static inline NV_STATUS subdeviceCtrlCmdEccGetUnrepairableMemoryFlag(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_UNREPAIRABLE_MEMORY_FLAG_PARAMS *pParams) {
+    NV_ASSERT_FAILED_PRECOMP("Subdevice was disabled!");
+    return NV_ERR_NOT_SUPPORTED;
+}
+#else // __nvoc_subdevice_h_disabled
+#define subdeviceCtrlCmdEccGetUnrepairableMemoryFlag(pSubdevice, pParams) subdeviceCtrlCmdEccGetUnrepairableMemoryFlag_IMPL(pSubdevice, pParams)
 #endif // __nvoc_subdevice_h_disabled
 
 NV_STATUS subdeviceCtrlCmdFlaRange_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_FLA_RANGE_PARAMS *pParams);
@@ -7957,6 +7977,8 @@ NV_STATUS subdeviceCtrlCmdEccInjectError_IMPL(struct Subdevice *pSubdevice, NV20
 
 NV_STATUS subdeviceCtrlCmdEccGetRepairStatus_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_REPAIR_STATUS_PARAMS *pParams);
 
+NV_STATUS subdeviceCtrlCmdEccInjectionSupported_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_INJECTION_SUPPORTED_PARAMS *pParams);
+
 NV_STATUS subdeviceCtrlCmdGpuQueryEccConfiguration_VF(struct Subdevice *pSubdevice, NV2080_CTRL_GPU_QUERY_ECC_CONFIGURATION_PARAMS *pConfig);
 
 static inline NV_STATUS subdeviceCtrlCmdGpuQueryEccConfiguration_92bfc3(struct Subdevice *pSubdevice, NV2080_CTRL_GPU_QUERY_ECC_CONFIGURATION_PARAMS *pConfig) {
@@ -7979,6 +8001,8 @@ static inline NV_STATUS subdeviceCtrlCmdGpuResetEccErrorStatus_92bfc3(struct Sub
 }
 
 NV_STATUS subdeviceCtrlCmdEccGetSramUniqueUncorrCounts_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_SRAM_UNIQUE_UNCORR_COUNTS_PARAMS *pParams);
+
+NV_STATUS subdeviceCtrlCmdEccGetUnrepairableMemoryFlag_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_ECC_GET_UNREPAIRABLE_MEMORY_FLAG_PARAMS *pParams);
 
 NV_STATUS subdeviceCtrlCmdFlaRange_IMPL(struct Subdevice *pSubdevice, NV2080_CTRL_FLA_RANGE_PARAMS *pParams);
 

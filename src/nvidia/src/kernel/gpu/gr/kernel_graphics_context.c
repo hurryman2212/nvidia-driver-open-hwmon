@@ -2619,8 +2619,10 @@ kgrctxShouldManageCtxBuffers_PHYSICAL
     NvU32 gfid
 )
 {
-    return !gpuIsClientRmAllocatedCtxBufferEnabled(pGpu) || (gpuIsSriovEnabled(pGpu) && IS_GFID_PF(gfid) &&
-                                                             !(IS_MIG_IN_USE(pGpu) && hypervisorIsType(OS_HYPERVISOR_VMWARE)));
+    if (gpuIsSriovEnabled(pGpu) && !RMCFG_FEATURE_PLATFORM_GSP)
+        return !gpuIsClientRmAllocatedCtxBufferEnabled(pGpu) || IS_GFID_PF(gfid);
+    else
+        return !gpuIsClientRmAllocatedCtxBufferEnabled(pGpu);
 }
 
 /**
@@ -3289,7 +3291,7 @@ kgrctxGetRegisterAccessMapId_IMPL
 {
     // Using cached privilege because this function is called at a raised IRQL.
     if (kchannelCheckIsAdmin(pKernelChannel)
-        && !hypervisorIsVgxHyper() && IS_GFID_PF(kchannelGetGfid(pKernelChannel)))
+        && !(hypervisorIsVgxHyper() || (RMCFG_FEATURE_PLATFORM_GSP && IS_VGPU_GSP_PLUGIN_OFFLOAD_ENABLED(pGpu))) && IS_GFID_PF(kchannelGetGfid(pKernelChannel)))
     {
         return GR_GLOBALCTX_BUFFER_UNRESTRICTED_PRIV_ACCESS_MAP;
     }

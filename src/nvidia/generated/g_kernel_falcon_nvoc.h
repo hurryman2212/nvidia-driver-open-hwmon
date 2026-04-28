@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 /*
- * SPDX-FileCopyrightText: Copyright (c) 1993-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 1993-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -120,7 +120,7 @@ struct KernelFalcon {
     struct KernelCrashCatEngine *__nvoc_pbase_KernelCrashCatEngine;    // kcrashcatEngine super
     struct KernelFalcon *__nvoc_pbase_KernelFalcon;    // kflcn
 
-    // Vtable with 41 per-object function pointers
+    // Vtable with 43 per-object function pointers
     NvU32 (*__kflcnRegRead__)(struct OBJGPU *, struct KernelFalcon * /*this*/, NvU32);  // virtual halified (3 hals) override (kcrashcatEngine) base (kcrashcatEngine) body
     void (*__kflcnRegWrite__)(struct OBJGPU *, struct KernelFalcon * /*this*/, NvU32, NvU32);  // virtual halified (3 hals) override (kcrashcatEngine) base (kcrashcatEngine) body
     NvU32 (*__kflcnRiscvRegRead__)(struct OBJGPU *, struct KernelFalcon * /*this*/, NvU32);  // halified (3 hals) body
@@ -159,6 +159,8 @@ struct KernelFalcon {
     void (*__kflcnDumpTracepc__)(struct OBJGPU *, struct KernelFalcon * /*this*/, CoreDumpRegs *);  // halified (3 hals) body
     void (*__kflcnDumpPeripheralRegs__)(struct OBJGPU *, struct KernelFalcon * /*this*/, CoreDumpRegs *);  // halified (2 hals) body
     NvU32 (*__kflcnGetEccInterruptMask__)(struct OBJGPU *, struct KernelFalcon * /*this*/);  // halified (2 hals) body
+    NV_STATUS (*__kflcnGetFatalHwErrorStatus__)(struct OBJGPU *, struct KernelFalcon * /*this*/, NvU32 *);  // halified (2 hals) body
+    const char * (*__kflcnFatalHwErrorCodeToString__)(struct OBJGPU *, struct KernelFalcon * /*this*/, NvU32, NvBool);  // halified (2 hals)
     void (*__kflcnReadDmem__)(struct KernelFalcon * /*this*/, NvU32, NvU32, void *);  // virtual halified (2 hals) inherited (kcrashcatEngine) base (kcrashcatEngine)
     const NvU32 * (*__kflcnGetScratchOffsets__)(struct KernelFalcon * /*this*/, NV_CRASHCAT_SCRATCH_GROUP_ID);  // virtual halified (2 hals) inherited (kcrashcatEngine) base (kcrashcatEngine)
     NvU32 (*__kflcnGetWFL0Offset__)(struct KernelFalcon * /*this*/);  // virtual halified (2 hals) inherited (kcrashcatEngine) base (kcrashcatEngine)
@@ -409,6 +411,12 @@ struct KernelFalcon * kflcnGetKernelFalconForEngine_IMPL(struct OBJGPU *pGpu, EN
 #define kflcnGetEccInterruptMask_FNPTR(pKernelFlcn) pKernelFlcn->__kflcnGetEccInterruptMask__
 #define kflcnGetEccInterruptMask(pGpu, pKernelFlcn) kflcnGetEccInterruptMask_DISPATCH(pGpu, pKernelFlcn)
 #define kflcnGetEccInterruptMask_HAL(pGpu, pKernelFlcn) kflcnGetEccInterruptMask_DISPATCH(pGpu, pKernelFlcn)
+#define kflcnGetFatalHwErrorStatus_FNPTR(pKernelFlcn) pKernelFlcn->__kflcnGetFatalHwErrorStatus__
+#define kflcnGetFatalHwErrorStatus(pGpu, pKernelFlcn, pErrorStatus) kflcnGetFatalHwErrorStatus_DISPATCH(pGpu, pKernelFlcn, pErrorStatus)
+#define kflcnGetFatalHwErrorStatus_HAL(pGpu, pKernelFlcn, pErrorStatus) kflcnGetFatalHwErrorStatus_DISPATCH(pGpu, pKernelFlcn, pErrorStatus)
+#define kflcnFatalHwErrorCodeToString_FNPTR(pKernelFlcn) pKernelFlcn->__kflcnFatalHwErrorCodeToString__
+#define kflcnFatalHwErrorCodeToString(pGpu, pKernelFlcn, errorCode, bNvPrintfStr) kflcnFatalHwErrorCodeToString_DISPATCH(pGpu, pKernelFlcn, errorCode, bNvPrintfStr)
+#define kflcnFatalHwErrorCodeToString_HAL(pGpu, pKernelFlcn, errorCode, bNvPrintfStr) kflcnFatalHwErrorCodeToString_DISPATCH(pGpu, pKernelFlcn, errorCode, bNvPrintfStr)
 #define kflcnConfigured_FNPTR(arg_this) arg_this->__nvoc_base_KernelCrashCatEngine.__nvoc_metadata_ptr->vtable.__kcrashcatEngineConfigured__
 #define kflcnConfigured(arg_this) kflcnConfigured_DISPATCH(arg_this)
 #define kflcnUnload_FNPTR(arg_this) arg_this->__nvoc_base_KernelCrashCatEngine.__nvoc_metadata_ptr->vtable.__kcrashcatEngineUnload__
@@ -593,6 +601,14 @@ static inline void kflcnDumpPeripheralRegs_DISPATCH(struct OBJGPU *pGpu, struct 
 
 static inline NvU32 kflcnGetEccInterruptMask_DISPATCH(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn) {
     return pKernelFlcn->__kflcnGetEccInterruptMask__(pGpu, pKernelFlcn);
+}
+
+static inline NV_STATUS kflcnGetFatalHwErrorStatus_DISPATCH(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn, NvU32 *pErrorStatus) {
+    return pKernelFlcn->__kflcnGetFatalHwErrorStatus__(pGpu, pKernelFlcn, pErrorStatus);
+}
+
+static inline const char * kflcnFatalHwErrorCodeToString_DISPATCH(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn, NvU32 errorCode, NvBool bNvPrintfStr) {
+    return pKernelFlcn->__kflcnFatalHwErrorCodeToString__(pGpu, pKernelFlcn, errorCode, bNvPrintfStr);
 }
 
 static inline NvBool kflcnConfigured_DISPATCH(struct KernelFalcon *arg_this) {
@@ -920,6 +936,16 @@ NvU32 kflcnGetEccInterruptMask_GB100(struct OBJGPU *pGpu, struct KernelFalcon *p
 static inline NvU32 kflcnGetEccInterruptMask_4a4dee(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn) {
     return 0;
 }
+
+NV_STATUS kflcnGetFatalHwErrorStatus_GB100(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn, NvU32 *pErrorStatus);
+
+static inline NV_STATUS kflcnGetFatalHwErrorStatus_46f6a7(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn, NvU32 *pErrorStatus) {
+    return NV_ERR_NOT_SUPPORTED;
+}
+
+const char *kflcnFatalHwErrorCodeToString_GB100(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn, NvU32 errorCode, NvBool bNvPrintfStr);
+
+const char *kflcnFatalHwErrorCodeToString_GA100(struct OBJGPU *pGpu, struct KernelFalcon *pKernelFlcn, NvU32 errorCode, NvBool bNvPrintfStr);
 
 #undef PRIVATE_FIELD
 

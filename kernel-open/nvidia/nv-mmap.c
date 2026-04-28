@@ -128,9 +128,7 @@ nvidia_vma_access(
     void *kernel_mapping;
     const nv_alloc_mapping_context_t *mmap_context = &nvlfp->mmap_context;
     NvU64 offsInVma = addr - vma->vm_start;
-    NvBool bIsNuma = NV_FALSE;
-
-    bIsNuma = pfn_valid(mmap_context->access_start >> PAGE_SHIFT);
+    NvBool has_pages;
 
     pageIndex = (offsInVma >> PAGE_SHIFT);
     pageOffset = (offsInVma & ~PAGE_MASK);
@@ -140,11 +138,13 @@ nvidia_vma_access(
         return -EINVAL;
     }
 
-    if (!mmap_context->valid)
+    if (!smp_load_acquire(&mmap_context->valid))
     {
         nv_printf(NV_DBG_ERRORS, "NVRM: VM: invalid mmap context\n");
         return -EINVAL;
     }
+
+    has_pages = (mmap_context->num_pages != 0);
 
     if (write && !(mmap_context->prot & NV_PROTECT_WRITEABLE))
     {
@@ -167,7 +167,7 @@ nvidia_vma_access(
         pageIndex = nv_array_index_no_speculate(pageIndex, at->num_pages);
         kernel_mapping = (void *)(at->page_table[pageIndex].virt_addr + pageOffset);
     }
-    else if (bIsNuma)
+    else if (has_pages)
     {
         struct page *pPage = NV_GET_PAGE_STRUCT(mmap_context->page_array[pageIndex]);
         NvU8 *pPagePtr = (NvU8 *) page_address(pPage);
@@ -212,7 +212,7 @@ found:
         memcpy(buffer, kernel_mapping, length);
 #endif // defined(NVCPU_AARCH64)
 
-    if (at == NULL && !bIsNuma)
+    if (at == NULL && !has_pages)
     {
         kernel_mapping = ((char *)kernel_mapping - pageOffset);
         os_unmap_kernel_space(kernel_mapping, PAGE_SIZE);
@@ -524,7 +524,7 @@ int nvidia_mmap_helper(
      * If mmap context is not valid on this file descriptor, this mapping wasn't
      * previously validated with the RM so it must be rejected.
      */
-    if (!mmap_context->valid)
+    if (!smp_load_acquire(&mmap_context->valid))
     {
         nv_printf(NV_DBG_ERRORS, "NVRM: VM: invalid mmap\n");
         return -EINVAL;

@@ -183,6 +183,8 @@ static void _kgspRpcGspEventHandleFecsBufferError(NvU32, void *);
 
 static NV_STATUS _kgspRpcGspEventRecoveryAction(OBJGPU *, OBJRPC *);
 
+static NvBool _kgspCheckGspFatalHwError(OBJGPU *pGpu, KernelGsp *pKernelGsp);
+
 static void _kgspInitGpuProperties(OBJGPU *);
 static NV_STATUS _kgspDumpEngineFunc(OBJGPU*, PRB_ENCODER*, NVD_STATE*, void*);
 
@@ -2262,6 +2264,36 @@ _kgspRpcIncrementTimeoutCountAndRateLimitPrints
 }
 
 /*!
+ * Check if there is any pending fatal HW error like GSP Poison Error that could have caused GSP to timeout
+ */
+static NvBool
+_kgspCheckGspFatalHwError
+(
+    OBJGPU     *pGpu,
+    KernelGsp  *pKernelGsp
+)
+{
+    NvU32         intrStatus;
+    KernelFalcon *pKernelFalcon = staticCast(pKernelGsp, KernelFalcon);
+
+    // Check if GSP has been poisoned. Mark device for reset if so.
+    intrStatus = kflcnGetPendingHostInterrupts(pGpu, pKernelFalcon);
+    if(kgspCheckGspPoisonError_HAL(pGpu, pKernelGsp, intrStatus))
+    {
+        //
+        // gpuCheckEccCounts_HAL should be able to detect and log Xid 140 (UNRECOVERABLE_ECC_ERROR_ESCAPE)
+        // but the functions it uses to get ecc error counts aren't wired to the right HAL for GB100+,
+        // bug 5816620 will fix it. Revisit this function and remove nvErrorLog_va once bug 5816620 is fixed.
+        //
+        nvErrorLog_va(pGpu, UNRECOVERABLE_ECC_ERROR_ESCAPE, "Poison error in GSP.");
+        gpuCheckEccCounts_HAL(pGpu);
+        gpuMarkDeviceForReset(pGpu);
+        return NV_TRUE;
+    }
+    return NV_FALSE;
+}
+
+/*!
  * GSP client RM RPC poll routine
  */
 static NV_STATUS
@@ -2407,6 +2439,12 @@ _kgspRpcRecvPoll
             rpcStatus = timeoutStatus;
 
             _kgspRpcIncrementTimeoutCountAndRateLimitPrints(pGpu, pRpc);
+
+            if(_kgspCheckGspFatalHwError(pGpu, pKernelGsp))
+            {
+				// We don't have to classify timeouts since we know for sure it is a fatal HW error.
+                goto done;
+            }
 
             if (!pRpc->bQuietPrints)
             {

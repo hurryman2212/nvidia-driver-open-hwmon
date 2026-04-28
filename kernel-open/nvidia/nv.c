@@ -113,6 +113,7 @@ MODULE_LICENSE("Dual MIT/GPL");
 
 MODULE_INFO(supported, "external");
 MODULE_VERSION(NV_VERSION_STRING);
+MODULE_DESCRIPTION("NVIDIA core GPU kernel module");
 MODULE_ALIAS_CHARDEV_MAJOR(NV_MAJOR_DEVICE_NUMBER);
 
 /*
@@ -3117,6 +3118,12 @@ nvidia_ctl_close(
     up(&nvl->ldata_lock);
 
     rm_cleanup_file_private(sp, nv, &nvlfp->nvfp);
+
+    if (nvlfp->mmap_context.alloc != NULL && nvlfp->mmap_context.valid)
+    {
+        nv_alloc_t *at = nvlfp->mmap_context.alloc;
+        nv_alloc_release(nvlfp, at);
+    }
 
     if (nvlfp->free_list != NULL)
     {

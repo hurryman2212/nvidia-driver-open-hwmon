@@ -1143,6 +1143,25 @@ static void __nvoc_init_funcTable_KernelGsp_1(KernelGsp *pThis, GpuHalspecOwner 
         }
     }
 
+    // kgspCheckGspPoisonError -- halified (3 hals) body
+    if (( ((rmVariantHal_HalVarIdx >> 5) == 0UL) && ((1UL << (rmVariantHal_HalVarIdx & 0x1f)) & 0x00000001UL) )) /* RmVariantHal: VF */ 
+    {
+        pThis->__kgspCheckGspPoisonError__ = &kgspCheckGspPoisonError_86b752;
+    }
+    else
+    {
+        if (( ((chipHal_HalVarIdx >> 5) == 1UL) && ((1UL << (chipHal_HalVarIdx & 0x1f)) & 0xe0000000UL) ) ||
+            ( ((chipHal_HalVarIdx >> 5) == 2UL) && ((1UL << (chipHal_HalVarIdx & 0x1f)) & 0x00000fe6UL) )) /* ChipHal: GB100 | GB102 | GB10B | GB110 | GB112 | GB202 | GB203 | GB205 | GB206 | GB207 | GB20B | GB20C */ 
+        {
+            pThis->__kgspCheckGspPoisonError__ = &kgspCheckGspPoisonError_GB100;
+        }
+        // default
+        else
+        {
+            pThis->__kgspCheckGspPoisonError__ = &kgspCheckGspPoisonError_3dd2c9;
+        }
+    }
+
     // kgspServiceFatalHwError -- halified (3 hals) body
     if (( ((rmVariantHal_HalVarIdx >> 5) == 0UL) && ((1UL << (rmVariantHal_HalVarIdx & 0x1f)) & 0x00000001UL) )) /* RmVariantHal: VF */ 
     {
@@ -1902,13 +1921,13 @@ static void __nvoc_init_funcTable_KernelGsp_1(KernelGsp *pThis, GpuHalspecOwner 
 
     // kgspGetWFL0Offset -- virtual halified (2 hals) inherited (kcrashcatEngine) base (kflcn)
     pThis->__kgspGetWFL0Offset__ = &__nvoc_up_thunk_KernelCrashCatEngine_kgspGetWFL0Offset;
-} // End __nvoc_init_funcTable_KernelGsp_1 with approximately 260 basic block(s).
+} // End __nvoc_init_funcTable_KernelGsp_1 with approximately 263 basic block(s).
 
 
-// Initialize vtable(s) for 93 virtual method(s).
+// Initialize vtable(s) for 94 virtual method(s).
 void __nvoc_init_funcTable_KernelGsp(KernelGsp *pThis, GpuHalspecOwner *pGpuhalspecowner, RmHalspecOwner *pRmhalspecowner) {
 
-    // Initialize vtable(s) with 67 per-object function pointer(s).
+    // Initialize vtable(s) with 68 per-object function pointer(s).
     __nvoc_init_funcTable_KernelGsp_1(pThis, pGpuhalspecowner, pRmhalspecowner);
 }
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -202,6 +202,11 @@ memoryfabricimportedrefCtrlValidate_IMPL
     if ((pParams->totalPfns == 0) ||
         (pMemoryFabricImportedRef->numUpdatedPfns >= pParams->totalPfns))
         return NV_ERR_INVALID_ARGUMENT;
+
+    if (pParams->numPfns > NV_ARRAY_ELEMENTS(pParams->pfnArray))
+    {
+        return NV_ERR_INVALID_ARGUMENT;
+    }
 
     if (!portSafeAddU64(pParams->offset, pParams->numPfns, &result) ||
         (result > pParams->totalPfns))
