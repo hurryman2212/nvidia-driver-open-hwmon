@@ -359,7 +359,7 @@ typedef struct nv_event_s
     NvU16               info16;
     nv_file_private_t  *nvfp;  /* per file-descriptor data pointer */
     NvU32               fd;
-    NvBool              active; /* whether the event should be signaled */
+    PORT_ATOMIC NvS32   active; /* whether the event should be signaled */
     NvU32               refcount; /* count of associated RM events */
     struct nv_event_s  *next;
 } nv_event_t;

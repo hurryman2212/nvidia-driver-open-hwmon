@@ -462,7 +462,7 @@ RmLogGpuCrash(OBJGPU *pGpu)
 
 static void free_os_event_under_lock(nv_event_t *event)
 {
-    event->active = NV_FALSE;
+    portAtomicSetS32(&event->active, 0);
 
     // If refcount > 0, event will be freed by osDereferenceObjectCount
     // when the last associated RM event is freed.
@@ -614,7 +614,7 @@ static NV_STATUS allocate_os_event(
     new_event->hParent  = hParent;
     new_event->nvfp     = nvfp;
     new_event->fd       = fd;
-    new_event->active   = NV_TRUE;
+    portAtomicSetS32(&new_event->active, 1);
     new_event->refcount = 0;
 
     portSyncSpinlockAcquire(nv->event_spinlock);
@@ -6160,7 +6160,8 @@ NV_STATUS NV_API_CALL rm_pmu_perfmon_get_load(
         return NV_ERR_INVALID_ARGUMENT;
     }
 
-    if (nvp->dynamic_power.state == NV_DYNAMIC_POWER_STATE_IDLE_INDICATED)
+    if (nvp->dynamic_power.state == NV_DYNAMIC_POWER_STATE_IDLE_INDICATED ||
+        nvp->dynamic_power.state == NV_DYNAMIC_POWER_STATE_IDLE_SUSTAINED)
     {
         *load = 0;
         return NV_OK;

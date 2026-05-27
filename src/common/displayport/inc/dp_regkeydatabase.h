@@ -97,6 +97,9 @@
 
 #define NV_DP_REGKEY_DISABLE_AVOID_HBR3_WAR         "DP_DISABLE_AVOID_HBR3_WAR"
 
+// Bug 5880515 : Avoid writing to DPCD 600h if panel target and current state is same
+#define NV_DP_REGKEY_SKIP_PANEL_POWER_WRITE         "DP_SKIP_PANEL_POWER_WRITE"
+
 // Bug 4793112 : On eDP panel, do not cache source OUI if it reads zero
 #define NV_DP_REGKEY_SKIP_ZERO_OUI_CACHE            "DP_SKIP_ZERO_OUI_CACHE"
 
@@ -120,6 +123,9 @@
 #define NV_DP_REGKEY_FORCE_NLPIGNORE_DDS                   "DP_FORCE_NLPIGNORE_DDS"
 
 #define NV_DP_REGKEY_ENABLE_CLEAR_MSA_WHEN_NOT_USED          "DP_ENABLE_CLEAR_MSA_WHEN_NOT_USED"
+
+// Sets connector as HDMI for Dongle on DP++ port
+#define NV_DP_REGKEY_SET_CONNECTOR_HDMI_FOR_DONGLE           "DP_SET_CONNECTOR_HDMI_FOR_DONGLE"
 
 //
 // Data Base used to store all the regkey values.
@@ -159,6 +165,7 @@ struct DP_REGKEY_DATABASE
     bool  bDisableEffBppSST8b10b;
     bool  bDisableWatermarkCaching;
     bool  bMSTPCONCapsReadDisabled;
+    bool  bSkipPanelPowerWrite;
     bool  bForceDisableTunnelBwAllocation;
     bool  bDownspreadDisabled;
     bool  bDisableAvoidHBR3War;
@@ -173,6 +180,7 @@ struct DP_REGKEY_DATABASE
     bool  bUseMaxDSCCompressionMST;
     bool  bIgnoreUnplugUnlessRequested;
     bool  bEnableClearMSAWhenNotUsed;
+    bool  bSetConnectorHdmiForDongle;
 };
 
 extern struct DP_REGKEY_DATABASE dpRegkeyDatabase;

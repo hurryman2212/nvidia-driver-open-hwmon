@@ -776,7 +776,7 @@ vidmemConstruct_IMPL
             portMemSet(pFbAllocPageFormat, 0, sizeof(FB_ALLOC_PAGE_FORMAT));
             pFbAllocInfo->pageFormat = pFbAllocPageFormat;
 
-            memUtilsInitFBAllocInfo(pAllocRequest->pUserParams, pFbAllocInfo, hClient, hParent);
+            memUtilsInitFBAllocInfo(pAllocRequest->pUserParams, pFbAllocInfo, hClient, pDeviceRef->hResource);
 
             rmStatus = memmgrAllocResources(pGpu, pMemoryManager, pAllocRequest, pFbAllocInfo);
             if (rmStatus != NV_OK)
@@ -834,7 +834,7 @@ vidmemConstruct_IMPL
         portMemSet(pFbAllocPageFormat, 0, sizeof(FB_ALLOC_PAGE_FORMAT));
         pFbAllocInfo->pageFormat = pFbAllocPageFormat;
 
-        memUtilsInitFBAllocInfo(pAllocRequest->pUserParams, pFbAllocInfo, hClient, hParent);
+        memUtilsInitFBAllocInfo(pAllocRequest->pUserParams, pFbAllocInfo, hClient, pDeviceRef->hResource);
 
         rmStatus = memmgrAllocResources(pGpu, pMemoryManager, pAllocRequest, pFbAllocInfo);
         if (rmStatus != NV_OK)

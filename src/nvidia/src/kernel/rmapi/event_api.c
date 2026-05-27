@@ -609,7 +609,7 @@ void CliAddSystemEvent(
                         }
                     }
 
-                    if (osNotifyEvent(NULL, pEventNotification, 0, 0, 0) != NV_OK)
+                    if (osNotifyEvent(NULL, pEventNotification, 0, 0, 0, NV_TRUE) != NV_OK)
                     {
                         if (pEventData != NULL)
                             eventSystemDequeueEventLatest(&pClient->CliSysEventInfo.eventQueue);
