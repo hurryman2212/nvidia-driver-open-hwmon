@@ -3,7 +3,7 @@
 # package.
 #
 # To build: run `make modules`
-# To install the build kernel modules: run (as root) `make modules_install`
+# To install the kernel modules through DKMS: run (as root) `make install`
 ###########################################################################
 
 ###########################################################################
@@ -15,6 +15,13 @@ nv_kernel_o_binary         = kernel-open/nvidia/nv-kernel.o_binary
 
 nv_modeset_kernel_o        = src/nvidia-modeset/$(OUTPUTDIR)/nv-modeset-kernel.o
 nv_modeset_kernel_o_binary = kernel-open/nvidia-modeset/nv-modeset-kernel.o_binary
+
+DKMS_CONF ?= dkms.conf
+DKMS ?= dkms
+DKMS_JOBS ?= $(shell nproc 2>/dev/null || echo 1)
+DKMS_PACKAGE_NAME := $(shell bash -c '. "$(DKMS_CONF)" >/dev/null 2>&1; printf "%s" "$$PACKAGE_NAME"')
+DKMS_PACKAGE_VERSION := $(shell bash -c '. "$(DKMS_CONF)" >/dev/null 2>&1; printf "%s" "$$PACKAGE_VERSION"')
+DKMS_PACKAGE := $(DKMS_PACKAGE_NAME)/$(DKMS_PACKAGE_VERSION)
 
 ###########################################################################
 # rules
@@ -59,12 +66,23 @@ modules: $(nv_kernel_o_binary) $(nv_modeset_kernel_o_binary)
 	$(MAKE) -C kernel-open modules
 
 ###########################################################################
-# Install the built kernel modules using kbuild.
+# Install the kernel modules through DKMS.
 ###########################################################################
 
-.PHONY: modules_install
-modules_install:
-	$(MAKE) -C kernel-open modules_install
+.PHONY: check-dkms-package install modules_install uninstall
+check-dkms-package:
+	@test -n "$(DKMS_PACKAGE_NAME)" || \
+		(echo "Unable to read PACKAGE_NAME from $(DKMS_CONF)" >&2; exit 1)
+	@test -n "$(DKMS_PACKAGE_VERSION)" || \
+		(echo "Unable to read PACKAGE_VERSION from $(DKMS_CONF)" >&2; exit 1)
+
+install: check-dkms-package
+	MAKEFLAGS="-j$(DKMS_JOBS)" $(DKMS) install .
+
+modules_install: install
+
+uninstall: check-dkms-package
+	$(DKMS) remove $(DKMS_PACKAGE) --all
 
 ###########################################################################
 # clean
