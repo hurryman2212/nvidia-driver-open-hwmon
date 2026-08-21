@@ -716,6 +716,26 @@
 #define NV_REG_REGISTER_PCI_DRIVER NV_REG_STRING(__NV_REGISTER_PCI_DRIVER)
 
 /*
+ * Option: EnableAutomaticGpuRecovery
+ *
+ * Description:
+ *
+ * When this option is enabled, the driver automatically unbinds and rebinds
+ * a GPU after RM selects PF FLR as its recovery action. The unbind follows the
+ * normal device removal path, so recovery waits for active clients to close
+ * before shutting down and resetting the GPU.
+ *
+ * Possible values:
+ *
+ *  1 - automatically recover the GPU (default)
+ *  0 - only report the recovery action
+ */
+
+#define __NV_ENABLE_AUTOMATIC_GPU_RECOVERY EnableAutomaticGpuRecovery
+#define NV_REG_ENABLE_AUTOMATIC_GPU_RECOVERY \
+    NV_REG_STRING(__NV_ENABLE_AUTOMATIC_GPU_RECOVERY)
+
+/*
  * Option: RegisterPlatformDeviceDriver
  *
  * Description:
@@ -1050,6 +1070,7 @@ NV_DEFINE_REG_ENTRY_GLOBAL(__NV_IGNORE_MMIO_CHECK, 0);
 NV_DEFINE_REG_ENTRY_GLOBAL(__NV_NVLINK_DISABLE, 0);
 NV_DEFINE_REG_ENTRY_GLOBAL(__NV_ENABLE_PCIE_RELAXED_ORDERING_MODE, 0);
 NV_DEFINE_REG_ENTRY_GLOBAL(__NV_REGISTER_PCI_DRIVER, 1);
+NV_DEFINE_REG_ENTRY_GLOBAL(__NV_ENABLE_AUTOMATIC_GPU_RECOVERY, 1);
 NV_DEFINE_REG_ENTRY_GLOBAL(__NV_REGISTER_PLATFORM_DEVICE_DRIVER, 1);
 NV_DEFINE_REG_ENTRY_GLOBAL(__NV_ENABLE_RESIZABLE_BAR, 0);
 NV_DEFINE_REG_ENTRY_GLOBAL(__NV_ENABLE_DBG_BREAKPOINT, 0);
@@ -1112,6 +1133,7 @@ nv_parm_t nv_parms[] = {
     NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_DYNAMIC_POWER_MANAGEMENT_VIDEO_MEMORY_THRESHOLD),
     NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_TEGRA_GPU_PG_MASK),
     NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_REGISTER_PCI_DRIVER),
+    NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_ENABLE_AUTOMATIC_GPU_RECOVERY),
     NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_ENABLE_PCIE_RELAXED_ORDERING_MODE),
     NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_ENABLE_RESIZABLE_BAR),
     NV_DEFINE_PARAMS_TABLE_ENTRY(__NV_ENABLE_GPU_FIRMWARE),
