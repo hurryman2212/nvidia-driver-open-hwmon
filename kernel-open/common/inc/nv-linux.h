@@ -1240,6 +1240,9 @@ typedef struct nv_linux_state_s {
 
     atomic64_t usage_count;
 
+    /* Prevent duplicate automatic recovery tasks for this PCI binding. */
+    atomic_t automatic_recovery_task_pending;
+
     NvU32    suspend_count;
 
     struct device  *dev;
@@ -1598,6 +1601,7 @@ static inline NV_STATUS nv_check_gpu_state(nv_state_t *nv)
 extern NvU32 NVreg_EnableUserNUMAManagement;
 extern NvU32 NVreg_OsEnableCxlSupport;
 extern NvU32 NVreg_RegisterPCIDriver;
+extern NvU32 NVreg_EnableAutomaticGpuRecovery;
 extern NvU32 NVreg_RegisterPlatformDeviceDriver;
 extern NvU32 NVreg_EnableResizableBar;
 extern NvU32 NVreg_TegraGpuPgMask;
